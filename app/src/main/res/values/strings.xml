@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">StockInventory</string>
+    <string name="add_dummy_data">Add Dummy Data</string>
+    <string name="product_name">Product Name</string>
+    <string name="product_price">Product Price</string>
+    <string name="product_quantity">Product Quantity</string>
+    <string name="supplier_name">Supplier Name</string>
+    <string name="supplier_phone_number">Supplier Phone Number</string>
+    <string name="save">Save</string>
+</resources>

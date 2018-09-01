@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFEE">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbarEditor"
+        style="@style/ToolbarStyle"
+        app:titleTextColor="@android:color/white"/>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInput1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbarEditor"
+        android:padding="8dp"
+        app:hintTextAppearance="@style/TextHintColor">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/productNameEdit"
+            style="@style/TextInputEditStyle"
+            android:hint="@string/product_name"
+            android:inputType="text" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInput2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textInput1"
+        android:padding="8dp"
+        app:hintTextAppearance="@style/TextHintColor">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/productPriceEdit"
+            style="@style/TextInputEditStyle"
+            android:hint="@string/product_price"
+            android:inputType="number" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInput3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textInput2"
+        android:padding="8dp"
+        app:hintTextAppearance="@style/TextHintColor">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/productQuantityEdit"
+            style="@style/TextInputEditStyle"
+            android:hint="@string/product_quantity"
+            android:inputType="number" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInput4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textInput3"
+        android:padding="8dp"
+        app:hintTextAppearance="@style/TextHintColor">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/productSupplierEdit"
+            style="@style/TextInputEditStyle"
+            android:hint="@string/supplier_name"
+            android:inputType="text" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInput5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textInput4"
+        android:padding="8dp"
+        app:hintTextAppearance="@style/TextHintColor">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/productSupplierNoEdit"
+            style="@style/TextInputEditStyle"
+            android:hint="@string/supplier_phone_number"
+            android:inputType="phone" />
+    </android.support.design.widget.TextInputLayout>
+
+</RelativeLayout>
