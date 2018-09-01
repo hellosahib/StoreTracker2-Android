@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.widget.Toast;
 
 import java.net.URI;
 
@@ -73,7 +75,14 @@ public class StockProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        return null;
+        switch (mUriMatcher.match(uri)){
+            case FULL_STOCK:{
+                return insertStock(uri,values);
+            }
+            default:{
+                throw new IllegalArgumentException("Insertion Not Supported,Unknown URI " + uri);
+            }
+        }
     }
 
     @Override
@@ -84,5 +93,17 @@ public class StockProvider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
         return 0;
+    }
+
+
+    private Uri insertStock(Uri uri,ContentValues values){
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        long id = database.insert(StockContract.StockEntry.TABLE_NAME,null,values);
+        if(id == -1){
+            Toast.makeText(getContext(), "Failed To Insert", Toast.LENGTH_SHORT).show();
+            Log.e("InsertStock","Failed To Insert");
+            return null;
+        }
+        return ContentUris.withAppendedId(uri,id);
     }
 }

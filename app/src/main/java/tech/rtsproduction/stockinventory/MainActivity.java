@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -26,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     FloatingActionButton floatingButton;
     ListView inventoryListView;
-    DBHelper dbHelper;
     ArrayList<String> stockData;
     ArrayAdapter<String> adapter;
 
@@ -40,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
         floatingButton = findViewById(R.id.floatingButtonMain);
         inventoryListView = findViewById(R.id.listviewMain);
         //INIT
-        dbHelper = new DBHelper(this);
         stockData = new ArrayList<>();
         //ON CLICK LISTENER
         floatingButton.setOnClickListener(new View.OnClickListener() {
@@ -63,22 +63,24 @@ public class MainActivity extends AppCompatActivity {
     }//OnStart
 
     public void getData() {
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-        Cursor cursor = database.query(StockContract.StockEntry.TABLE_NAME, null, null, null, null, null, null);
+        Cursor cursor = getContentResolver().query(StockEntry.CONTENT_URI,null,null,null);
         while (cursor.moveToNext()) {
             stockData.add("Product name " + cursor.getString(cursor.getColumnIndex(StockEntry.COLUMN_PRODUCT_NAME)) + " Product Quantity " + cursor.getString(cursor.getColumnIndex(StockEntry.COLUMN_PRODUCT_QUANTITY)));
         }
         cursor.close();
     }//GetData
 
-    public void addDummyData(SQLiteDatabase db) {
+    public void addDummyData() {
         ContentValues values = new ContentValues();
         values.put(StockEntry.COLUMN_PRODUCT_NAME, "Jane Doe");
         values.put(StockEntry.COLUMN_PRODUCT_PRICE, 100);
         values.put(StockEntry.COLUMN_PRODUCT_QUANTITY, 250);
         values.put(StockEntry.COLUMN_PRODUCT_SUPPLIER_NAME, "RTS Production");
         values.put(StockEntry.COLUMN_PRODUCT_SUPPLIER_PHONE, "9999990090");
-        db.insert(StockEntry.TABLE_NAME, null, values);
+        Uri uri = getContentResolver().insert(StockEntry.CONTENT_URI,values);
+        if(uri == null){
+            Toast.makeText(this, "Insertion Failed", Toast.LENGTH_SHORT).show();
+        }
     }//AddDummyData
 
 
@@ -92,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.addDummyMenu: {
-                addDummyData(dbHelper.getWritableDatabase());
+                addDummyData();
                 return true;
             }
         }

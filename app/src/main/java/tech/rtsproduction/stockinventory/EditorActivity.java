@@ -2,12 +2,14 @@ package tech.rtsproduction.stockinventory;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import tech.rtsproduction.stockinventory.Database.DBHelper;
 import tech.rtsproduction.stockinventory.Database.StockContract.StockEntry;
@@ -17,7 +19,6 @@ public class EditorActivity extends AppCompatActivity {
     //VARIABLES
     Toolbar toolbarEditor;
     TextInputEditText pName,pPrice,pQuantity,pSupplierName,pSupplierNo;
-    DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +34,6 @@ public class EditorActivity extends AppCompatActivity {
         //INIT
         setSupportActionBar(toolbarEditor);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        dbHelper = new DBHelper(this);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class EditorActivity extends AppCompatActivity {
         return true;
     }
 
-    public void insertData(SQLiteDatabase db){
+    public void insertData(){
         //INSERT DATA FROM EDIT TEXTS'S AND PUSH THEM TO DB
         ContentValues values = new ContentValues();
         values.put(StockEntry.COLUMN_PRODUCT_NAME,pName.getText().toString());
@@ -50,7 +50,10 @@ public class EditorActivity extends AppCompatActivity {
         values.put(StockEntry.COLUMN_PRODUCT_QUANTITY,pQuantity.getText().toString());
         values.put(StockEntry.COLUMN_PRODUCT_SUPPLIER_NAME,pSupplierName.getText().toString());
         values.put(StockEntry.COLUMN_PRODUCT_SUPPLIER_PHONE,pSupplierNo.getText().toString());
-        db.insert(StockEntry.TABLE_NAME,null,values);
+        Uri uri = getContentResolver().insert(StockEntry.CONTENT_URI,values);
+        if(uri == null){
+            Toast.makeText(this, R.string.insertion_failed, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -59,7 +62,7 @@ public class EditorActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.saveMenu:{
                 //SAVE THE DATA
-                insertData(dbHelper.getWritableDatabase());
+                insertData();
                 finish();
                 return true;
             }

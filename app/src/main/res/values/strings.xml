@@ -7,4 +7,5 @@
     <string name="supplier_name">Supplier Name</string>
     <string name="supplier_phone_number">Supplier Phone Number</string>
     <string name="save">Save</string>
+    <string name="insertion_failed">Insertion Failed</string>
 </resources>
