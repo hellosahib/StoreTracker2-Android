@@ -9,10 +9,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
+import tech.rtsproduction.stockinventory.Database.StockContract.StockEntry;
 
-import java.net.URI;
 
 public class StockProvider extends ContentProvider {
 
@@ -77,7 +78,9 @@ public class StockProvider extends ContentProvider {
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
         switch (mUriMatcher.match(uri)){
             case FULL_STOCK:{
-                return insertStock(uri,values);
+                if(values != null){
+                    return insertStock(uri,values);
+                }
             }
             default:{
                 throw new IllegalArgumentException("Insertion Not Supported,Unknown URI " + uri);
@@ -92,15 +95,34 @@ public class StockProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
+        
         return 0;
     }
 
 
     private Uri insertStock(Uri uri,ContentValues values){
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        long id = database.insert(StockContract.StockEntry.TABLE_NAME,null,values);
+        //DATA VALIDATION
+        if(TextUtils.isEmpty(values.getAsString(StockEntry.COLUMN_PRODUCT_NAME))){
+            throw new IllegalArgumentException("Name Could Not be Null");
+        }
+        if(values.getAsInteger(StockEntry.COLUMN_PRODUCT_PRICE) <= 0){
+            throw new IllegalArgumentException("Price Could Not be Null or less");
+        }
+        if(values.getAsInteger(StockEntry.COLUMN_PRODUCT_QUANTITY) < 0){
+            throw new IllegalArgumentException("Quantity Could not be less than 0");
+        }
+        if(TextUtils.isEmpty(values.getAsString(StockEntry.COLUMN_PRODUCT_SUPPLIER_NAME))){
+            throw new IllegalArgumentException("Supplier Name Could not be Empty");
+        }
+        if (TextUtils.isEmpty(values.getAsString(StockEntry.COLUMN_PRODUCT_SUPPLIER_PHONE))){
+            throw new IllegalArgumentException("Supplier Name Should not be Empty");
+        }
+        //VALIDATION ENDS HERE
+        //DATABASE INSERT RETURN LONG
+        long id = database.insert(StockEntry.TABLE_NAME,null,values);
+        //-1 SIGNIFY ANY ERROR IN DATA INSERTION
         if(id == -1){
-            Toast.makeText(getContext(), "Failed To Insert", Toast.LENGTH_SHORT).show();
             Log.e("InsertStock","Failed To Insert");
             return null;
         }

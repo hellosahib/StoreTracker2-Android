@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -15,6 +16,10 @@ import tech.rtsproduction.stockinventory.Database.DBHelper;
 import tech.rtsproduction.stockinventory.Database.StockContract.StockEntry;
 
 public class EditorActivity extends AppCompatActivity {
+
+    /*
+    * Why Does Opening This Activity Takes Time And  Bring Load on CPU ?
+     */
 
     //VARIABLES
     Toolbar toolbarEditor;
@@ -42,7 +47,7 @@ public class EditorActivity extends AppCompatActivity {
         return true;
     }
 
-    public void insertData(){
+    public boolean insertData(){
         //INSERT DATA FROM EDIT TEXTS'S AND PUSH THEM TO DB
         ContentValues values = new ContentValues();
         values.put(StockEntry.COLUMN_PRODUCT_NAME,pName.getText().toString());
@@ -50,10 +55,17 @@ public class EditorActivity extends AppCompatActivity {
         values.put(StockEntry.COLUMN_PRODUCT_QUANTITY,pQuantity.getText().toString());
         values.put(StockEntry.COLUMN_PRODUCT_SUPPLIER_NAME,pSupplierName.getText().toString());
         values.put(StockEntry.COLUMN_PRODUCT_SUPPLIER_PHONE,pSupplierNo.getText().toString());
-        Uri uri = getContentResolver().insert(StockEntry.CONTENT_URI,values);
-        if(uri == null){
-            Toast.makeText(this, R.string.insertion_failed, Toast.LENGTH_SHORT).show();
+        Uri uri = null;
+        try{
+            uri = getContentResolver().insert(StockEntry.CONTENT_URI,values);
+        }catch (IllegalArgumentException e){
+            Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
         }
+        if(uri == null){
+            Log.e("DB Error",getString(R.string.insertion_failed));
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -62,8 +74,9 @@ public class EditorActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.saveMenu:{
                 //SAVE THE DATA
-                insertData();
-                finish();
+                if(insertData()){
+                    finish();
+                }
                 return true;
             }
         }
