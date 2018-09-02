@@ -5,4 +5,8 @@
         android:id="@+id/addDummyMenu"
         android:title="@string/add_dummy_data"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/deleteAllMenu"
+        android:title="@string/delete_all_data"
+        app:showAsAction="never"/>
 </menu>

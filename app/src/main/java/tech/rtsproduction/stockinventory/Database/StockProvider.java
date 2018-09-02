@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
+
 import tech.rtsproduction.stockinventory.Database.StockContract.StockEntry;
 
 
@@ -35,7 +36,6 @@ public class StockProvider extends ContentProvider {
         mUriMatcher.addURI(StockContract.CONTENT_AUTHORITY, StockContract.PATH_PRODUCT_STOCKS, FULL_STOCK);
         mUriMatcher.addURI(StockContract.CONTENT_AUTHORITY, StockContract.PATH_PRODUCT_STOCKS + "/#", PARTICULAR_STOCK);
     }
-
 
     //CONTENT PROVIDER METHODS
     @Override
@@ -64,25 +64,37 @@ public class StockProvider extends ContentProvider {
                 throw new IllegalArgumentException("Cannot Query Unknown URI " + uri);
             }
         }
+
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
     }
 
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        return null;
+        switch (mUriMatcher.match(uri)) {
+            case FULL_STOCK: {
+                return StockEntry.CONTENT_LIST_TYPE;
+            }
+            case PARTICULAR_STOCK: {
+                return StockEntry.CONTENT_ITEM_TYPE;
+            }
+            default: {
+                throw new IllegalArgumentException("Unknown URI " + uri);
+            }
+        }
     }
 
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        switch (mUriMatcher.match(uri)){
-            case FULL_STOCK:{
-                if(values != null){
-                    return insertStock(uri,values);
+        switch (mUriMatcher.match(uri)) {
+            case FULL_STOCK: {
+                if (values != null) {
+                    return insertStock(uri, values);
                 }
             }
-            default:{
+            default: {
                 throw new IllegalArgumentException("Insertion Not Supported,Unknown URI " + uri);
             }
         }
@@ -90,42 +102,97 @@ public class StockProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        switch (mUriMatcher.match(uri)) {
+            case FULL_STOCK: {
+                getContext().getContentResolver().notifyChange(uri, null);
+                return database.delete(StockEntry.TABLE_NAME, selection, selectionArgs);
+            }
+            case PARTICULAR_STOCK: {
+                selection = StockEntry._ID + "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                getContext().getContentResolver().notifyChange(uri, null);
+                return database.delete(StockEntry.TABLE_NAME, selection, selectionArgs);
+            }
+            default: {
+                throw new IllegalArgumentException("Deletion is not Supported,Invalid Uri " + uri);
+            }
+        }
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        
-        return 0;
+        switch (mUriMatcher.match(uri)) {
+            case FULL_STOCK: {
+                return updateStock(uri, values, selection, selectionArgs);
+            }
+            case PARTICULAR_STOCK: {
+                selection = StockEntry._ID + "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                return updateStock(uri, values, selection, selectionArgs);
+            }
+            default: {
+                throw new IllegalArgumentException("Update Not Performed,Unknown URI " + uri);
+            }
+        }
     }
 
-
-    private Uri insertStock(Uri uri,ContentValues values){
+    /**
+     * USER DEFINED METHODS
+     */
+    private int updateStock(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
+        try {
+            sanityCheck(values);
+        } catch (IllegalArgumentException e) {
+            Toast.makeText(getContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            return -1;
+        }
+        int updatesDone = database.update(StockEntry.TABLE_NAME, values, selection, selectionArgs);
+        if (updatesDone != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return updatesDone;
+    }
+
+    public void sanityCheck(ContentValues values) {
         //DATA VALIDATION
-        if(TextUtils.isEmpty(values.getAsString(StockEntry.COLUMN_PRODUCT_NAME))){
-            throw new IllegalArgumentException("Name Could Not be Null");
+        if (values.size() == 0) {
+            return;
+        } else if (values.containsKey(StockEntry.COLUMN_PRODUCT_NAME)) {
+            if (TextUtils.isEmpty(values.getAsString(StockEntry.COLUMN_PRODUCT_NAME))) {
+                throw new IllegalArgumentException("Name Could Not be Null");
+            }
+        } else if (values.containsKey(StockEntry.COLUMN_PRODUCT_PRICE)) {
+            if (values.getAsInteger(StockEntry.COLUMN_PRODUCT_PRICE) <= 0) {
+                throw new IllegalArgumentException("Price Could Not be Null or less");
+            }
+        } else if (values.containsKey(StockEntry.COLUMN_PRODUCT_QUANTITY)) {
+            if (values.getAsInteger(StockEntry.COLUMN_PRODUCT_QUANTITY) < 0) {
+                throw new IllegalArgumentException("Quantity Could not be less than 0");
+            }
+        } else if (values.containsKey(StockEntry.COLUMN_PRODUCT_SUPPLIER_NAME)) {
+            if (TextUtils.isEmpty(values.getAsString(StockEntry.COLUMN_PRODUCT_SUPPLIER_NAME))) {
+                throw new IllegalArgumentException("Supplier Name Could not be Empty");
+            }
+        } else if (values.containsKey(StockEntry.COLUMN_PRODUCT_SUPPLIER_PHONE)) {
+            if (TextUtils.isEmpty(values.getAsString(StockEntry.COLUMN_PRODUCT_SUPPLIER_PHONE))) {
+                throw new IllegalArgumentException("Supplier Name Should not be Empty");
+            }
         }
-        if(values.getAsInteger(StockEntry.COLUMN_PRODUCT_PRICE) <= 0){
-            throw new IllegalArgumentException("Price Could Not be Null or less");
-        }
-        if(values.getAsInteger(StockEntry.COLUMN_PRODUCT_QUANTITY) < 0){
-            throw new IllegalArgumentException("Quantity Could not be less than 0");
-        }
-        if(TextUtils.isEmpty(values.getAsString(StockEntry.COLUMN_PRODUCT_SUPPLIER_NAME))){
-            throw new IllegalArgumentException("Supplier Name Could not be Empty");
-        }
-        if (TextUtils.isEmpty(values.getAsString(StockEntry.COLUMN_PRODUCT_SUPPLIER_PHONE))){
-            throw new IllegalArgumentException("Supplier Name Should not be Empty");
-        }
-        //VALIDATION ENDS HERE
+    }
+
+    private Uri insertStock(Uri uri, ContentValues values) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        sanityCheck(values);
         //DATABASE INSERT RETURN LONG
-        long id = database.insert(StockEntry.TABLE_NAME,null,values);
+        long id = database.insert(StockEntry.TABLE_NAME, null, values);
         //-1 SIGNIFY ANY ERROR IN DATA INSERTION
-        if(id == -1){
-            Log.e("InsertStock","Failed To Insert");
+        if (id == -1) {
+            Log.e("InsertStock", "Failed To Insert");
             return null;
         }
-        return ContentUris.withAppendedId(uri,id);
+        getContext().getContentResolver().notifyChange(uri, null);
+        return ContentUris.withAppendedId(uri, id);
     }
 }

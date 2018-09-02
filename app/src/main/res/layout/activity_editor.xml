@@ -8,7 +8,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbarEditor"
         style="@style/ToolbarStyle"
-        app:titleTextColor="@android:color/white"/>
+        app:titleTextColor="@android:color/white" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/textInput1"
@@ -40,26 +40,50 @@
             android:inputType="number" />
     </android.support.design.widget.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/textInput3"
+    <LinearLayout
+        android:id="@+id/linearLayoutEditor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/textInput2"
-        android:padding="8dp"
-        app:hintTextAppearance="@style/TextHintColor">
+        android:layout_margin="8dp"
+        android:orientation="horizontal">
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/productQuantityEdit"
-            style="@style/TextInputEditStyle"
-            android:hint="@string/product_quantity"
-            android:inputType="number" />
-    </android.support.design.widget.TextInputLayout>
+        <Button
+            android:id="@+id/plusQuantityBtnEditor"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorAccent"
+            android:text="+" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInput3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="8dp"
+            app:hintTextAppearance="@style/TextHintColor">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/productQuantityEdit"
+                style="@style/TextInputEditStyle"
+                android:hint="@string/product_quantity"
+                android:inputType="number" />
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/minusQuantityBtnEditor"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorAccent"
+            android:text="-" />
+
+    </LinearLayout>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/textInput4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textInput3"
+        android:layout_below="@id/linearLayoutEditor"
         android:padding="8dp"
         app:hintTextAppearance="@style/TextHintColor">
 
@@ -84,5 +108,14 @@
             android:hint="@string/supplier_phone_number"
             android:inputType="phone" />
     </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/orderBtnEditor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textInput5"
+        android:layout_margin="16dp"
+        android:background="@color/colorAccent"
+        android:text="@string/order" />
 
 </RelativeLayout>

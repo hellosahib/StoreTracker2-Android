@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/productTextItem"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="30sp"
+        tools:text="PRODUCT NAME" />
+
+    <TextView
+        android:id="@+id/productPriceTextItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/productTextItem"
+        android:textSize="20sp"
+        tools:text="PRICE" />
+
+    <TextView
+        android:id="@+id/productQuantityTextItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/productPriceTextItem"
+        android:textSize="20sp"
+        tools:text="Quantity" />
+
+    <Button
+        android:id="@+id/saleBtnItem"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="24dp"
+        android:background="@color/colorAccent"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:text="@string/sale" />
+</RelativeLayout>

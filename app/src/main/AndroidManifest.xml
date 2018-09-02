@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="tech.rtsproduction.stockinventory">
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
 
     <application
         android:allowBackup="true"
@@ -18,7 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".EditorActivity"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity"
+            android:label="@string/add_stock"/>
         <provider
             android:authorities="tech.rtsproduction.stockinventory"
             android:name=".Database.StockProvider"

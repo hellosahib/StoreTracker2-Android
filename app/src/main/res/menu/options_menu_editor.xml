@@ -5,5 +5,9 @@
         android:id="@+id/saveMenu"
         android:icon="@drawable/ic_check"
         android:title="@string/save"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/deleteMenu"
+        android:title="@string/delete_record"
+        app:showAsAction="never"/>
 </menu>

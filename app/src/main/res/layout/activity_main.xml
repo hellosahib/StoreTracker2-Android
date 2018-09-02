@@ -1,24 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
+
     <android.support.v7.widget.Toolbar
-        style="@style/ToolbarStyle"
         android:id="@+id/toolbarMain"
-        app:titleTextColor="@android:color/white"/>
+        style="@style/ToolbarStyle"
+        app:titleTextColor="@android:color/white" />
+
     <ListView
+        android:id="@+id/listviewMain"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbarMain"
-        android:layout_marginTop="8dp"
-        android:id="@+id/listviewMain"/>
+        android:layout_marginTop="8dp" />
+
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingButtonMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_margin="16dp"
-        android:id="@+id/floatingButtonMain"
-        android:src="@drawable/ic_add"/>
+        android:src="@drawable/ic_add" />
+    <!-- Empty View For List -->
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/emptySpaceTextEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/this_place_seems_so_lonely"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="26sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/emptySpaceTextEmpty"
+            android:text="@string/get_started_by_adding_a_product"
+            android:textAlignment="center"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
 </RelativeLayout>
