@@ -159,23 +159,30 @@ public class StockProvider extends ContentProvider {
         //DATA VALIDATION
         if (values.size() == 0) {
             return;
-        } else if (values.containsKey(StockEntry.COLUMN_PRODUCT_NAME)) {
+        }
+        if (values.containsKey(StockEntry.COLUMN_PRODUCT_NAME)) {
             if (TextUtils.isEmpty(values.getAsString(StockEntry.COLUMN_PRODUCT_NAME))) {
                 throw new IllegalArgumentException("Name Could Not be Null");
             }
-        } else if (values.containsKey(StockEntry.COLUMN_PRODUCT_PRICE)) {
-            if (values.getAsInteger(StockEntry.COLUMN_PRODUCT_PRICE) <= 0) {
+        }
+        if (values.containsKey(StockEntry.COLUMN_PRODUCT_PRICE)) {
+            Integer price = values.getAsInteger(StockEntry.COLUMN_PRODUCT_PRICE);
+            if (price == null||price < 0) {
                 throw new IllegalArgumentException("Price Could Not be Null or less");
             }
-        } else if (values.containsKey(StockEntry.COLUMN_PRODUCT_QUANTITY)) {
-            if (values.getAsInteger(StockEntry.COLUMN_PRODUCT_QUANTITY) < 0) {
+        }
+        if (values.containsKey(StockEntry.COLUMN_PRODUCT_QUANTITY)) {
+            Integer quantity = values.getAsInteger(StockEntry.COLUMN_PRODUCT_QUANTITY);
+            if (quantity == null || quantity < 0) {
                 throw new IllegalArgumentException("Quantity Could not be less than 0");
             }
-        } else if (values.containsKey(StockEntry.COLUMN_PRODUCT_SUPPLIER_NAME)) {
+        }
+        if (values.containsKey(StockEntry.COLUMN_PRODUCT_SUPPLIER_NAME)) {
             if (TextUtils.isEmpty(values.getAsString(StockEntry.COLUMN_PRODUCT_SUPPLIER_NAME))) {
                 throw new IllegalArgumentException("Supplier Name Could not be Empty");
             }
-        } else if (values.containsKey(StockEntry.COLUMN_PRODUCT_SUPPLIER_PHONE)) {
+        }
+        if (values.containsKey(StockEntry.COLUMN_PRODUCT_SUPPLIER_PHONE)) {
             if (TextUtils.isEmpty(values.getAsString(StockEntry.COLUMN_PRODUCT_SUPPLIER_PHONE))) {
                 throw new IllegalArgumentException("Supplier Name Should not be Empty");
             }

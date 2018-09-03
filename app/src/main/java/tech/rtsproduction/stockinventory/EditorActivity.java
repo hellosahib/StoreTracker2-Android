@@ -65,6 +65,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 int quantity = Integer.parseInt(pQuantity.getText().toString());
                 quantity++;
                 pQuantity.setText(String.valueOf(quantity));
+                updateQuantity();
             }
         });
 
@@ -75,6 +76,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 if (quantity > 0) {
                     quantity--;
                     pQuantity.setText(String.valueOf(quantity));
+                    updateQuantity();
                 } else {
                     Toast.makeText(EditorActivity.this, "Value Cant be Negative", Toast.LENGTH_SHORT).show();
                 }
@@ -212,7 +214,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     }
 
     /**
-     * Perform the deletion of the pet in the database.
+     * Perform the deletion of the Record in the database.
      */
     private boolean deletePet() {
         try {
@@ -222,5 +224,11 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             return false;
         }
+    }
+
+    private void updateQuantity() {
+        ContentValues values = new ContentValues();
+        values.put(StockEntry.COLUMN_PRODUCT_QUANTITY, pQuantity.getText().toString());
+        getContentResolver().update(mCurrentStockUri, values, null, null);
     }
 }

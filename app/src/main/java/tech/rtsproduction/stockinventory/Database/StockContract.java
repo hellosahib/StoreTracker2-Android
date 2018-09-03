@@ -6,6 +6,11 @@ import android.provider.BaseColumns;
 
 public class StockContract {
 
+    /*
+    * I Cant getString Method here if i want to Retrieve Strings from Strings.xml
+    * What i am doing wrong ??
+     */
+
     //MARK :URI CONSTANTS
     public static final String CONTENT_AUTHORITY = "tech.rtsproduction.stockinventory";
     public static final String PATH_PRODUCT_STOCKS = "product_stock";
